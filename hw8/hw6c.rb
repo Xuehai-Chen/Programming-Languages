@@ -5,24 +5,17 @@
 
 class MyPiece < Piece
   # The constant All_My_Pieces should be declared here
-  All_My_Pieces = [[[[0, 0], [1, 0], [0, 1], [1, 1]]], # square (only needs one)
-                   rotations([[0, 0], [-1, 0], [1, 0], [0, -1]]), # T
-                   [[[0, 0], [-1, 0], [1, 0], [2, 0]], # long (only needs two)
-                    [[0, 0], [0, -1], [0, 1], [0, 2]]],
-                   rotations([[0, 0], [0, -1], [0, 1], [1, 1]]), # L
-                   rotations([[0, 0], [0, -1], [0, 1], [-1, 1]]), # inverted L
-                   rotations([[0, 0], [-1, 0], [0, -1], [1, -1]]), # S
-                   rotations([[0, 0], [1, 0], [0, -1], [-1, -1]]), # Z
-                   [[[0, 0], [0, -1], [0, -2], [0, 1], [0, 2]], [[0, 0], [-1, 0], [-2, 0], [1, 0], [2, 0]]], #long long (only needs two)
-                   rotations([[-1, -1], [0, -1], [-1, 0], [0, 0], [0, 1]]),
-                   rotations([[0, 0], [0, 1], [1, 1]])]
+  All_My_Pieces = All_Pieces +
+      [[[[0, 0], [0, -1], [0, -2], [0, 1], [0, 2]], [[0, 0], [-1, 0], [-2, 0], [1, 0], [2, 0]]], #long long (only needs two)
+       rotations([[-1, -1], [0, -1], [-1, 0], [0, 0], [0, 1]]),
+       rotations([[0, 0], [0, 1], [1, 0]])]
   # your enhancements here
   def self.next_piece(myBoard)
     MyPiece.new(All_My_Pieces.sample, myBoard)
   end
 
   def self.cheating_piece(myBoard)
-    MyPiece.new([[0, 0]], myBoard)
+    MyPiece.new([[[0, 0]]], myBoard)
   end
 
 end
@@ -85,6 +78,10 @@ class MyTetris < Tetris
     @canvas.place(@board.block_size * @board.num_rows + 3,
                   @board.block_size * @board.num_columns + 6, 24, 80)
     @board.draw
+  end
+
+  def key_bindings
+    super
     @root.bind('c', proc {@board.cheat})
     @root.bind('u', proc {@board.rotate_180_degrees})
   end

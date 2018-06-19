@@ -202,7 +202,7 @@ fun eval_prog (e,env) =
              | Line (m,b) => Line (m, b + delta_y - m * delta_x)
              | VerticalLine x => VerticalLine (x + delta_x)
              | LineSegment (x1,y1,x2,y2) =>
-                 LineSegment (x1 + delta_x, y1 + delta_y, x2 + delta_x, y2 + delta_y)
+                 preprocess_prog(LineSegment (x1 + delta_x, y1 + delta_y, x2 + delta_x, y2 + delta_y))
              | _ => raise BadProgram("the value/expression cannot be shifted")
 
 fun preprocess_prog (e) =

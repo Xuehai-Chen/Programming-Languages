@@ -1,4 +1,4 @@
-# University of Washington, Programming Languages, Homework 7, hw7.rb 
+# University of Washington, Programming Languages, Homework 7, hw7d.rb
 # (See also ML code)
 
 # a little language for 2D geometry objects
@@ -339,7 +339,6 @@ class LineSegment < GeometryValue
   def intersectPoint(p)
     if isBetween(p.x, x1, x2) and isBetween(p.y, y1, y2)
       p
-      self
     else
       NoPoints.new
     end
@@ -450,6 +449,6 @@ class Shift < GeometryExpression
   end
 
   def eval_prog env
-    @e.preprocess_prog.eval_prog(env).shift(@dx,@dy)
+    @e.preprocess_prog.eval_prog(env).shift(@dx, @dy)
   end
 end

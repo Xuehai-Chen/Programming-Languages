@@ -147,10 +147,6 @@ class Point < GeometryValue
     e.preprocess_prog.eval_prog([]).intersectPoint(self)
   end
 
-  def intersectNoPoint(n)
-    NoPoints.new
-  end
-
   def intersectPoint(p)
     if real_close(x, p.x) and real_close(y, p.y)
       self
@@ -212,10 +208,6 @@ class Line < GeometryValue
     e.preprocess_prog.eval_prog([]).intersectLine(self)
   end
 
-  def intersectNoPoint(n)
-    NoPoints.new
-  end
-
   def intersectPoint(p)
     p.intersectLine(self)
   end
@@ -232,7 +224,6 @@ class Line < GeometryValue
       Point.new(px, m * px + b)
     end
   end
-
 
   def intersectVerticalLine(vl)
     Point.new(vl.x, vl.x * m + b)
@@ -266,10 +257,6 @@ class VerticalLine < GeometryValue
 
   def intersect e
     e.preprocess_prog.eval_prog([]).intersectVerticalLine(self)
-  end
-
-  def intersectNoPoint(n)
-    NoPoints.new
   end
 
   def intersectPoint(p)
@@ -332,10 +319,6 @@ class LineSegment < GeometryValue
     e.preprocess_prog.eval_prog([]).intersectLineSegment(self)
   end
 
-  def intersectNoPoint(n)
-    NoPoints.new
-  end
-
   def intersectPoint(p)
     if isBetween(p.x, x1, x2) and isBetween(p.y, y1, y2)
       p
@@ -353,9 +336,12 @@ class LineSegment < GeometryValue
   end
 
   def intersectVerticalLine(vl)
-    vl.intersectLineSegment(self)
+    if real_close(x1, vl.x) and real_close(x2, vl.x)
+      self
+    else
+      vl.intersectLineSegment(self)
+    end
   end
-
 
   def getSlope
     (y1 - y2) / (x1 - x2)
@@ -374,7 +360,7 @@ class LineSegment < GeometryValue
   end
 
   def isBetween (v, e1, e2)
-    (e1 - GeometryExpression::Epsilon <= v and e2 + GeometryExpression::Epsilon >= v) or (e2 - GeometryExpression::Epsilon <= v and e1 + GeometryExpression::Epsilon >= v)
+    ((e1 - GeometryExpression::Epsilon) <= v and (e2 + GeometryExpression::Epsilon >= v)) or ((e2 - GeometryExpression::Epsilon) <= v and (e1 + GeometryExpression::Epsilon >= v))
   end
 
 end

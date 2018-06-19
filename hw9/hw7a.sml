@@ -202,7 +202,7 @@ fun eval_prog (e,env) =
              | Line (m,b) => Line (m, b + delta_y - m * delta_x)
              | VerticalLine x => VerticalLine (x + delta_x)
              | LineSegment (x1,y1,x2,y2) =>
-                 preprocess_prog(LineSegment (x1 + delta_x, y1 + delta_y, x2 + delta_x, y2 + delta_y))
+                 LineSegment (x1 + delta_x, y1 + delta_y, x2 + delta_x, y2 + delta_y)
              | _ => raise BadProgram("the value/expression cannot be shifted")
 
 fun preprocess_prog (e) =
@@ -217,4 +217,7 @@ fun preprocess_prog (e) =
            if x1 > x2
            then LineSegment (x2,y2,x1,y1)
            else e
+     |Let(s,e1,e2) => Let (s, preprocess_prog(e1), preprocess_prog(e2))
+     |Intersect(e1,e2) => Intersect(preprocess_prog(e1),preprocess_prog(e2))
+     |Shift(delta_x,delta_y,e) => Shift(delta_x,delta_y,preprocess_prog(e))
      |_ => e

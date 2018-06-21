@@ -169,9 +169,60 @@ if not (s1.x1 == TWO and s1.y1 == THREE and s1.x2 == SIX and s1.y2 == 9)
 end
 
 e = LineSegment.new(THREE, -ONE, THREE, FOUR)
+
 e1 = e.intersect(VerticalLine.new(THREE))
 if not (((e1.is_a? LineSegment) and e1.x1 == THREE and e1.y1 == -ONE and e1.x2 == THREE and e1.y2 == FOUR))
   puts "LineSegment intersect not working properly"
 end
 
+e2 = e.intersect(LineSegment.new(THREE, FOUR, THREE, FIVE))
+if not (((e2.is_a? Point) and e2.x == THREE and e2.y == FOUR))
+  puts "LineSegment intersect not working properly"
+end
 
+e3 = e.intersect(LineSegment.new(THREE, TEN, THREE, FIVE))
+if not ((e3.is_a? NoPoints))
+  puts "LineSegment intersect not working properly"
+end
+
+e4 = e.intersect(LineSegment.new(THREE, -TWO, THREE, -THREE))
+if not ((e4.is_a? NoPoints))
+  puts "LineSegment intersect not working properly"
+end
+
+e5 = e.intersect(LineSegment.new(THREE, -TWO, THREE, THREE))
+if not ((e5.is_a? LineSegment) and e5.x1 ==  THREE and e5.y1 == -ONE and e5.x2 == THREE and e5.y2 == THREE)
+  puts "LineSegment intersect not working properly"
+end
+
+e6 = e.intersect(LineSegment.new(THREE, ZERO, THREE, THREE))
+if not ((e6.is_a? LineSegment) and e6.x1 ==  THREE and e6.y1 == ZERO and e6.x2 == THREE and e6.y2 == THREE)
+  puts "LineSegment intersect not working properly"
+end
+
+f = LineSegment.new(ONE,ONE,TWO,TWO)
+
+f1 = f.intersect(Line.new(ONE,ZERO))
+if not (((f1.is_a? LineSegment) and f1.x1 == ONE and f1.y1 == ONE and f1.x2 == TWO and f1.y2 == TWO))
+  puts "LineSegment intersect not working properly"
+end
+
+f2 = f.intersect(LineSegment.new(ONE,ONE,THREE,THREE))
+if not (((f2.is_a? LineSegment) and f2.x1 == ONE and f2.y1 == ONE and f2.x2 == TWO and f2.y2 == TWO))
+  puts "LineSegment intersect not working properly"
+end
+
+f3 = f.intersect(LineSegment.new(ONE,ONE,-THREE,-THREE))
+if not (((f3.is_a? Point) and f3.x == ONE and f3.y == ONE ))
+  puts "LineSegment intersect not working properly"
+end
+
+f4 = f.intersect(LineSegment.new(-ONE,-ONE,-THREE,-THREE))
+if not (((f4.is_a? NoPoints) ))
+  puts "LineSegment intersect not working properly"
+end
+
+f5 = f.intersect(LineSegment.new(FIVE,FIVE,THREE,THREE))
+if not (((f5.is_a? NoPoints) ))
+  puts "LineSegment intersect not working properly"
+end

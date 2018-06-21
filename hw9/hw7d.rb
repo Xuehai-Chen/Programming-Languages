@@ -299,7 +299,7 @@ class LineSegment < GeometryValue
     if real_close_point(x1, y1, x2, y2)
       Point.new(x1, y1)
     elsif real_close(x1, x2)
-      LineSegment.new(x1, min(y1, y2), x2, max(y1, y2))
+      LineSegment.new(x1, [y1, y2].min, x1, [y1, y2].max)
     elsif x1 > x2
       LineSegment.new(x2, y2, x1, y1)
     else
@@ -352,10 +352,38 @@ class LineSegment < GeometryValue
   end
 
   def intersectWithSegmentAsLineResult(ls)
-    if real_close(x1, ls.x1) and real_close(y1, ls.y1) and real_close(x2, ls.x2) and real_close(y2, ls.y2)
-      self
+    if real_close(x1, x2)
+      if y2 < ls.y1 or y1 > ls.y2
+        NoPoints.new
+      elsif y2 <= ls.y2
+        if y1 >= ls.y1
+          self
+        else
+          LineSegment.new(x1, ls.y1, x1, y2).preprocess_prog.eval_prog([])
+        end
+      elsif y2 > ls.y2
+        if y1 >= ls.y1
+          LineSegment.new(x1, y1, x1, ls.y2).preprocess_prog.eval_prog([])
+        else
+          ls
+        end
+      end
     else
-      ls.intersectLineSegment(self)
+      if x2 < ls.x1 or x1 > ls.x2
+        NoPoints.new
+      elsif x2 <= ls.x2
+        if x1 >= ls.x1
+          self
+        else
+          LineSegment.new(ls.x1, ls.y1, x2, y2).preprocess_prog.eval_prog([])
+        end
+      elsif x2 > ls.x2
+        if x1 > ls.x1
+          LineSegment.new(x1, y1, ls.x2, ls.y2).preprocess_prog.eval_prog([])
+        else
+          ls
+        end
+      end
     end
   end
 

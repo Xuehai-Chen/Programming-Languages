@@ -197,7 +197,7 @@ fun eval_prog (e,env) =
       | Intersect(e1,e2) => intersect(eval_prog(e1,env), eval_prog(e2, env))
       | Shift (delta_x, delta_y, e) =>
           case (eval_prog (e,env)) of
-               NoPoints => e
+               NoPoints => NoPoints
              | Point (x,y) => Point (delta_x + x, delta_y + y)
              | Line (m,b) => Line (m, b + delta_y - m * delta_x)
              | VerticalLine x => VerticalLine (x + delta_x)

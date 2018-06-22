@@ -140,7 +140,7 @@ class Point < GeometryValue
   end
 
   def shift (dx, dy)
-    Point.new(x + dx, y + dy)
+    Point.new(@x + dx, @y + dy)
   end
 
   def intersect e
@@ -148,7 +148,7 @@ class Point < GeometryValue
   end
 
   def intersectPoint(p)
-    if real_close(x, p.x) and real_close(y, p.y)
+    if real_close_point(@x, @y, p.x, p.y)
       self
     else
       NoPoints.new
@@ -156,7 +156,7 @@ class Point < GeometryValue
   end
 
   def intersectLine(l)
-    if real_close(y, x * l.m + l.b)
+    if real_close(@y, @x * l.m + l.b)
       self
     else
       NoPoints.new
@@ -164,7 +164,7 @@ class Point < GeometryValue
   end
 
   def intersectVerticalLine(vl)
-    if real_close(x, vl.x)
+    if real_close(@x, vl.x)
       self
     else
       NoPoints.new
@@ -201,7 +201,7 @@ class Line < GeometryValue
   end
 
   def shift(dx, dy)
-    Line.new(m, b + dy - m * dx)
+    Line.new(@m, @b + dy - @m * dx)
   end
 
   def intersect e
@@ -213,20 +213,20 @@ class Line < GeometryValue
   end
 
   def intersectLine(l)
-    if real_close(l.m, m)
-      if real_close(l.b, b)
+    if real_close(l.m, @m)
+      if real_close(l.b, @b)
         self
       else
         NoPoints.new
       end
     else
-      px = (b - l.b) / (l.m - m)
-      Point.new(px, m * px + b)
+      px = (@b - l.b) / (l.m - @m)
+      Point.new(px, @m * px + @b)
     end
   end
 
   def intersectVerticalLine(vl)
-    Point.new(vl.x, vl.x * m + b)
+    Point.new(vl.x, vl.x * @m + @b)
   end
 
   def intersectWithSegmentAsLineResult(ls)
@@ -252,7 +252,7 @@ class VerticalLine < GeometryValue
   end
 
   def shift(dx, dy)
-    VerticalLine.new(x + dx)
+    VerticalLine.new(@x + dx)
   end
 
   def intersect e
@@ -268,7 +268,7 @@ class VerticalLine < GeometryValue
   end
 
   def intersectVerticalLine(vl)
-    if real_close(x, vl.x)
+    if real_close(@x, vl.x)
       self
     else
       NoPoints.new
@@ -296,12 +296,12 @@ class LineSegment < GeometryValue
   end
 
   def preprocess_prog
-    if real_close_point(x1, y1, x2, y2)
-      Point.new(x1, y1)
-    elsif real_close(x1, x2)
-      LineSegment.new(x1, [y1, y2].min, x1, [y1, y2].max)
-    elsif x1 > x2
-      LineSegment.new(x2, y2, x1, y1)
+    if real_close_point(@x1, @y1, @x2, @y2)
+      Point.new(@x1, @y1)
+    elsif real_close(@x1, @x2)
+      LineSegment.new(@x1, [@y1, @y2].min, @x1, [@y1, @y2].max)
+    elsif @x1 > @x2
+      LineSegment.new(@x2, @y2, @x1, @y1)
     else
       self
     end
@@ -312,7 +312,7 @@ class LineSegment < GeometryValue
   end
 
   def shift(dx, dy)
-    LineSegment.new(x1 + dx, y1 + dy, x2 + dx, y2 + dy)
+    LineSegment.new(@x1 + dx, @y1 + dy, @x2 + dx, @y2 + dy)
   end
 
   def intersect e
@@ -320,7 +320,7 @@ class LineSegment < GeometryValue
   end
 
   def intersectPoint(p)
-    if onLine(p.x, p.y) and isBetween(p.x, x1, x2) and isBetween(p.y, y1, y2)
+    if onLine(p.x, p.y) and isBetween(p.x, @x1, @x2) and isBetween(p.y, @y1, @y2)
       p
     else
       NoPoints.new
@@ -336,55 +336,55 @@ class LineSegment < GeometryValue
   end
 
   def intersectVerticalLine(vl)
-    if real_close(x1, vl.x) and real_close(x2, vl.x)
+    if real_close(@x1, vl.x) and real_close(@x2, vl.x)
       self
     else
       vl.intersectLineSegment(self)
     end
   end
 
-  def getSlope
-    (y1 - y2) / (x1 - x2)
-  end
-
-  def getIntercept
-    y1 - x1 * getSlope
-  end
-
   def intersectWithSegmentAsLineResult(ls)
-    if real_close(x1, x2)
-      if y2 < ls.y1 or y1 > ls.y2
+    if real_close(@x1, @x2)
+      if @y2 < ls.y1 or @y1 > ls.y2
         NoPoints.new
-      elsif y2 <= ls.y2
-        if y1 >= ls.y1
+      elsif @y2 <= ls.y2
+        if @y1 >= ls.y1
           self
         else
-          LineSegment.new(x1, ls.y1, x1, y2).preprocess_prog.eval_prog([])
+          LineSegment.new(@x1, ls.y1, @x1, @y2).preprocess_prog.eval_prog([])
         end
-      elsif y2 > ls.y2
-        if y1 >= ls.y1
-          LineSegment.new(x1, y1, x1, ls.y2).preprocess_prog.eval_prog([])
+      elsif @y2 > ls.y2
+        if @y1 >= ls.y1
+          LineSegment.new(@x1, @y1, @x1, ls.y2).preprocess_prog.eval_prog([])
         else
           ls
         end
       end
     else
-      if x2 < ls.x1 or x1 > ls.x2
+      if @x2 < ls.x1 or @x1 > ls.x2
         NoPoints.new
-      elsif x2 <= ls.x2
-        if x1 >= ls.x1
+      elsif @x2 <= ls.x2
+        if @x1 >= ls.x1
           self
         else
-          LineSegment.new(ls.x1, ls.y1, x2, y2).preprocess_prog.eval_prog([])
+          LineSegment.new(ls.x1, ls.y1, @x2, @y2).preprocess_prog.eval_prog([])
         end
-      elsif x2 > ls.x2
-        if x1 > ls.x1
-          LineSegment.new(x1, y1, ls.x2, ls.y2).preprocess_prog.eval_prog([])
+      elsif @x2 > ls.x2
+        if @x1 > ls.x1
+          LineSegment.new(@x1, @y1, ls.x2, ls.y2).preprocess_prog.eval_prog([])
         else
           ls
         end
       end
     end
+  end
+
+  def getSlope
+    (@y1 - @y2) / (@x1 - @x2)
+  end
+
+  def getIntercept
+    @y1 - @x1 * getSlope
   end
 
   def isBetween (v, e1, e2)

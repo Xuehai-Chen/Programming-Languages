@@ -226,3 +226,25 @@ f5 = f.intersect(LineSegment.new(FIVE, FIVE, THREE, THREE))
 if not (((f5.is_a? NoPoints)))
   puts "LineSegment intersect not working properly"
 end
+
+g = Let.new("x", LineSegment.new(1.0, 2.0, 1.0, 2.0), LineSegment.new(2.0, 3.0, 1.0, 0.0))
+g1 = g.preprocess_prog
+print(g1)
+
+h = Shift.new(2.0, 3.2, LineSegment.new(1.0, 2.0, 1.0, 2.0))
+h1 = h.preprocess_prog
+print(h1)
+
+i = Shift.new(2.0, 3.2, LineSegment.new(2.0, 3.0, 1.0, 0.0))
+i1 = i.preprocess_prog
+print(i1.to_s)
+
+j = Intersect.new(LineSegment.new(1.0, 2.0, 1.0, 2.0), LineSegment.new(2.0, 3.0, 1.0, 0.0))
+j1 = j.preprocess_prog
+print(j1.to_s)
+
+k = Point.new(5.0, 5.0).intersect(LineSegment.new(1.0, 1.0, 5.0, 6.0))
+print(k.to_s)
+
+m = LineSegment.new(1.0, 1.0, 5.0, 6.0).intersectPoint(Point.new(5.0, 5.0))
+print(m.to_s)

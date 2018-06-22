@@ -320,7 +320,7 @@ class LineSegment < GeometryValue
   end
 
   def intersectPoint(p)
-    if isBetween(p.x, x1, x2) and isBetween(p.y, y1, y2)
+    if onLine(p.x, p.y) and isBetween(p.x, x1, x2) and isBetween(p.y, y1, y2)
       p
     else
       NoPoints.new
@@ -391,6 +391,10 @@ class LineSegment < GeometryValue
     ((e1 - GeometryExpression::Epsilon) <= v and (e2 + GeometryExpression::Epsilon >= v)) or ((e2 - GeometryExpression::Epsilon) <= v and (e1 + GeometryExpression::Epsilon >= v))
   end
 
+  def onLine(x, y)
+    real_close(y, x * getSlope + getIntercept)
+  end
+
 end
 
 # Note: there is no need for getter methods for the non-value classes
@@ -404,7 +408,7 @@ class Intersect < GeometryExpression
   end
 
   def preprocess_prog
-    self
+    Intersect.new(@e1.preprocess_prog, @e2.preprocess_prog)
   end
 
   def eval_prog env
@@ -423,7 +427,7 @@ class Let < GeometryExpression
   end
 
   def preprocess_prog
-    self
+    Let.new(@s, @e1.preprocess_prog, @e2.preprocess_prog)
   end
 
   def eval_prog env
@@ -459,7 +463,7 @@ class Shift < GeometryExpression
   end
 
   def preprocess_prog
-    self
+    Shift.new(@dx, @dy, @e.preprocess_prog)
   end
 
   def eval_prog env
